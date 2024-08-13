@@ -7,21 +7,16 @@
 #include "subsystems/Shooter.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Feeder.h"
-#include "subsystems/Elevator.h"
-#include "subsystems/Limelight.h"
-#include "subsystems/LED.h"
 
 class Controls : frc2::SubsystemBase
 {
 public:
-    Controls(Drivetrain *, Shooter *, Intake *, Elevator *, Feeder *, Limelight *, LED *);
+    Controls(Drivetrain *, Shooter *, Intake *, Feeder *);
     void Periodic() override;
     void DriveControls();
     void ShooterControls();
     void IntakeControls();
-    void ElevatorControls();
     void FeederControls();
-    void LEDControls();
 
     void SetSelectedRotaryIndex(int newIndex) { selectedRotaryIndex = newIndex; };
     int GetSelectedRotaryIndex() { return selectedRotaryIndex; };
@@ -51,9 +46,6 @@ private:
     Shooter *shooter;
     Intake *intake;
     Feeder *feeder;
-    Elevator *elevator;
-    Limelight *limelight3;
-    LED *candle;
 
     int selectedRotaryIndex = 0;
 };

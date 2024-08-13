@@ -146,56 +146,6 @@ namespace ShooterConstants
     inline constexpr double kShooterF = 0.000185;
 }
 
-namespace ElevatorConstants
-{
-    inline constexpr double kElevatorP = 0.15;
-    inline constexpr double kElevatorI = 0.0;
-    inline constexpr double kElevatorD = 0.0065;
-
-    inline constexpr double kCorrectionP = 0.001;
-    inline constexpr double kCorrectionI = 0.0;
-    inline constexpr double kCorrectionD = 0.0001;
-    
-    inline constexpr double kForce = 42;
-    inline constexpr double kKickup = 1.0;
-    inline constexpr double kGravity = 9.8;
-
-    inline constexpr double kSpeakerHeight = 1.35; // Speaker height to target in meters
-
-    inline constexpr double SHOOTER_ANGLE_OFFSET = 15;
-}
-
-namespace LEDConstants
-{
-    using namespace ctre::phoenix::led;
-    
-    class SetLEDs
-    {
-        public:
-            int r;
-            int g;
-            int b;
-            int w;
-            int startIndex;
-            int count;
-            SetLEDs(int r, int g, int b, int w, int startIndex, int count)
-            {
-                this->r = r;
-                this->g = g;
-                this->b = b;
-                this->w = w;
-                this->startIndex = startIndex;
-                this->count = count;
-            }
-    };
-
-    const SetLEDs kOff{0, 0, 0, 0, 0, 520};
-    const SetLEDs kIntaking{200, 200, 200, 200, 0, 520};
-    const SetLEDs kNoteSecured{0, 255, 0, 0, 0, 520};
-    const SetLEDs kElevatorDown{0, 0, 255, 0, 0, 520};
-    const SetLEDs kElevatorUp{255, 0, 0, 0, 0, 520};
-}
-
 namespace ControlBoardConstants
 {
     // Shoot button

@@ -35,7 +35,6 @@
 #include "AHRS.h"
 
 #include "subsystems/SwerveModule.h"
-#include "subsystems/Limelight.h"
 #include "Constants.h"
 
 extern frc::PIDController rotationController;
@@ -43,7 +42,7 @@ extern frc::PIDController rotationController;
 class Drivetrain : frc2::SubsystemBase
 {
 public:
-    Drivetrain(Limelight *);
+    Drivetrain();
 
     void Periodic() override;
 
@@ -154,8 +153,6 @@ private:
     SwerveModule frontRight;
     SwerveModule backLeft;
     SwerveModule backRight;
-
-    Limelight *limelight3;
 
     AHRS gyro;
     double lastGyroPitch = 0;

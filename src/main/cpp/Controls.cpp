@@ -1,14 +1,11 @@
 #include "Controls.h"
 
-Controls::Controls(Drivetrain *swerve, Shooter *shooter, Intake *intake, Elevator *elevator, Feeder *feeder, Limelight *limelight3, LED *candle)
+Controls::Controls(Drivetrain *swerve, Shooter *shooter, Intake *intake, Feeder *feeder)
 {
     this->swerve = swerve;
     this->shooter = shooter;
     this->intake = intake;
     this->feeder = feeder;
-    this->elevator = elevator;
-    this->limelight3 = limelight3;
-    this->candle = candle;
 }
 
 void Controls::Periodic()
@@ -18,9 +15,6 @@ void Controls::Periodic()
     DriveControls();
     ShooterControls();
     IntakeControls();
-    ElevatorControls();
-    FeederControls();
-    LEDControls();
 }
 
 void Controls::DriveControls()
@@ -32,8 +26,6 @@ void Controls::DriveControls()
     if (gamepad.GetYButton() == true)
     {
         swerve->ResetGyroAngle();
-        if (limelight3->GetTargetValid() == 1)
-            swerve->ResetPose(limelight3->GetRobotPose());
     }
 
     if (swerve->IsAlignmentOn())
@@ -108,32 +100,6 @@ void Controls::IntakeControls()
         intake->StopMotor();
 }
 
-void Controls::ElevatorControls()
-{
-    if (gamepad.GetPOV() == 270) 
-    {
-        elevator->SetElevator1Motor(gamepad.GetRightBumper() ? -0.5 : 0.5);
-        return;
-    }
-    else if (gamepad.GetPOV() == 90) 
-    {
-        elevator->SetElevator2Motor(gamepad.GetRightBumper() ? -0.5 : 0.5);
-        return;
-    }
-    else if (controlBoard.GetRawButton(ControlBoardConstants::ELEVATOR_UP))
-    {
-        elevator->ElevatorControl(elevator->GetElevatorSpeed());
-    }
-    else if (controlBoard.GetRawButton(ControlBoardConstants::ELEVATOR_DOWN))
-    {
-        elevator->ElevatorControl(-elevator->GetElevatorSpeed());
-    }
-    else
-    {
-        elevator->StopMotors();
-    }
-}
-
 void Controls::FeederControls()
 {
     if (controlBoard.GetRawButton(ControlBoardConstants::SHOOT))
@@ -179,25 +145,5 @@ void Controls::FeederControls()
     {
         feeder->StopMotor();
         StopRumble();
-    }
-}
-
-void Controls::LEDControls() {
-    if (!elevator->GetElevator1BottomLimit() || !elevator->GetElevator2BottomLimit()) {
-        candle->LEDControls(LED::ControlMethods::kElevatorUp);
-    }
-    else if (controlBoard.GetRawButton(ControlBoardConstants::GROUND_INTAKE))
-    {
-        if (feeder->IsNoteSecured() == false)
-        {
-            candle->LEDControls(LED::ControlMethods::kIntaking);
-        }
-        else
-        {
-            candle->LEDControls(LED::ControlMethods::kNoteSecured);
-        }
-    }
-    else {
-        candle->LEDControls(LED::ControlMethods::kElevatorDown);
     }
 }
