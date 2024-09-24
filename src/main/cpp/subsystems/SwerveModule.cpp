@@ -93,8 +93,40 @@ SwerveModule::SwerveModule(int driveMotorChannel, int swerveMotorChannel, int ca
 
 // Set the speed + rotation of the swerve module from a SwerveModuleState object
 // param: desiredState - A SwerveModuleState representing the desired new state of the module
-void SwerveModule::SetDesiredState(const frc::SwerveModuleState desiredState, double speedAdjustment)
+void SwerveModule::SetDesiredState(const frc::SwerveModuleState desiredState)
 {
+    frc::Rotation2d encoderRotation{
+      units::radian_t{canCoder.Get}};
+
+  // Optimize the reference state to avoid spinning further than 90 degrees
+  auto state =
+      frc::SwerveModuleState::Optimize(desiredState, encoderRotation);
+
+  // Scale speed by cosine of angle error. This scales down movement
+  // perpendicular to the desired direction of travel that can occur when
+  // modules change directions. This results in smoother driving.
+  state.speed *= (state.angle - encoderRotation).Cos();
+
+  // Calculate the drive output from the drive PID controller.
+  const auto driveOutput = m_drivePIDController.Calculate(
+      m_driveEncoder.GetRate(), state.speed.value());
+
+  const auto driveFeedforward = m_driveFeedforward.Calculate(state.speed);
+
+  // Calculate the turning motor output from the turning PID controller.
+  const auto turnOutput = m_turningPIDController.Calculate(
+      units::radian_t{m_turningEncoder.GetDistance()}, state.angle.Radians());
+
+  const auto turnFeedforward = m_turnFeedforward.Calculate(
+      m_turningPIDController.GetSetpoint().velocity);
+
+  // Set the motor outputs.
+  m_driveMotor.SetVoltage(units::volt_t{driveOutput} + driveFeedforward);
+  m_turningMotor.SetVoltage(units::volt_t{turnOutput} + turnFeedforward);
+
+
+
+
     currentAngle = GetAngle(); // 0 - 360 degrees
     // SwerveModuleState contains information about the velocity and angle of a swerve module
     // Optimize to avoid spinning more than 90 degrees, or pi/2 radians
@@ -128,6 +160,6 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState desiredState, do
 
     // Set the drive motor to the optimized state speed
 
-    percentSpeed = optimizedState.speed / DrivetrainConstants::MAX_SPEED;
-    driveMotor.Set(percentSpeed * speedAdjustment);
+    percentSpeed = optimizedState.speed / DrivetrainConstants::kMaxSpeed;
+    driveMotor.Set(percentSpeed);
 }

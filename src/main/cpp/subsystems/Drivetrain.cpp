@@ -110,13 +110,13 @@ void Drivetrain::DriveWithInput(double fwd, double stf, double rot, bool limitSp
     }
 
     // Get the y speed or forward speed. Invert this because Xbox controllers return negative values when pushed forward
-    auto ySpeed = units::meters_per_second_t(-fwd * DrivetrainConstants::MAX_SPEED);
+    auto ySpeed = units::meters_per_second_t(-fwd * DrivetrainConstants::kMaxSpeed);
 
     // Get the x speed or sideways/strafe speed. Needs to be inverted.
-    auto xSpeed = units::meters_per_second_t(-stf * DrivetrainConstants::MAX_SPEED);
+    auto xSpeed = units::meters_per_second_t(-stf * DrivetrainConstants::kMaxSpeed);
 
     // Get the rate of angular rotation. Needs to be inverted. Remember CCW is positive in mathematics.
-    auto rotation = units::radians_per_second_t(-rot * DrivetrainConstants::MAX_ANGULAR_SPEED);
+    auto rotation = units::radians_per_second_t(-rot * DrivetrainConstants::kMaxAngularSpeed);
 
     frc::Rotation2d heading = gyro.GetRotation2d(); //odometry.GetEstimatedPosition().Rotation().RotateBy(frc::Rotation2d(units::angle::degree_t(180)));
     auto speeds = fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(ySpeed, xSpeed, rotation, heading)
@@ -134,7 +134,7 @@ void Drivetrain::Drive(const frc::ChassisSpeeds &speeds)
     chassisSpeeds = speeds;
     auto states = kinematics.ToSwerveModuleStates(speeds);
 
-    kinematics.DesaturateWheelSpeeds(&states, DrivetrainConstants::MAX_SPEED);
+    kinematics.DesaturateWheelSpeeds(&states, DrivetrainConstants::kMaxSpeed);
 
     frc::SwerveModuleState fl = states[0];
     frc::SwerveModuleState fr = states[1];

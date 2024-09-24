@@ -175,8 +175,6 @@ private:
 
     int cycle = 0;
 
-    frc::PIDController rotationController{DrivetrainConstants::kRotationP, DrivetrainConstants::kRotationI, DrivetrainConstants::kRotationD, 20_ms};
-
     frc::Field2d field;
 };
 

@@ -9,6 +9,7 @@
 #include <numbers>
 #include <string>
 #include <array>
+#include <numbers>
 
 namespace RobotMap
 {
@@ -86,7 +87,8 @@ namespace AutoConstants
 
 namespace SwerveModuleConstants
 {
-    inline constexpr double ENCODER_INCHES_PER_COUNT = 0.00090689;
+    inline constexpr auto kModuleMaxAngularVelocity = std::numbers::pi * 1_rad_per_s;
+    inline constexpr auto kModuleMaxAngularAcceleration = std::numbers::pi * 2_rad_per_s / 1_s;
 
     inline constexpr double kDriveP = 0.54;                                                                                     
     inline constexpr double kDriveI = 0.0;
@@ -98,9 +100,9 @@ namespace SwerveModuleConstants
     inline constexpr double kAngleD = 0.5;
     inline constexpr double kAngleF = 0.0;
 
-    // Motor rotations to 1 wheel rotation
-    inline constexpr double DRIVE_GEAR_RATIO = 6.54;
-    inline constexpr double WHEEL_CIRCUMFERENCE = 0.3085;
+    inline constexpr double kWheelRadius = 0.0491;
+    inline constexpr double kWheelCircumference = kWheelRadius * 2 * std::numbers::pi;
+    inline constexpr double kDriveRatio = 6.54;
 }
 
 namespace DrivetrainConstants
@@ -110,13 +112,13 @@ namespace DrivetrainConstants
     inline constexpr frc::Translation2d backLeftLocation{-0.3016_m, +0.2699_m};
     inline constexpr frc::Translation2d backRightLocation{-0.3016_m, -0.2699_m};
 
-    inline constexpr units::meters_per_second_t MAX_SPEED = 4.084_mps;
-    inline constexpr units::radians_per_second_t MAX_ANGULAR_SPEED{std::numbers::pi};
+    inline constexpr units::meters_per_second_t kMaxSpeed = 4.084_mps;
+    inline constexpr units::radians_per_second_t kMaxAngularSpeed{std::numbers::pi};
 
     inline constexpr pathplanner::HolonomicPathFollowerConfig holonomicConfig = pathplanner::HolonomicPathFollowerConfig(
         pathplanner::PIDConstants(SwerveModuleConstants::kDriveP, SwerveModuleConstants::kDriveI, SwerveModuleConstants::kDriveD), // Translation PID constants
         pathplanner::PIDConstants(SwerveModuleConstants::kAngleP, SwerveModuleConstants::kAngleI, SwerveModuleConstants::kAngleD), // Rotation PID constants
-        MAX_SPEED,                                                                                                                 // Max module speed, in m/s
+        kMaxSpeed,                                                                                                                 // Max module speed, in m/s
         0.4047_m,                                                                                                                   // Drive base radius in meters. Distance from robot center to furthest module.
         pathplanner::ReplanningConfig()                                                                                            // Default path replanning config. See the API for the options here
     );

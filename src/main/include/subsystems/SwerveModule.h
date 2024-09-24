@@ -16,7 +16,15 @@
 #include <ctre/phoenix6/configs/Configurator.hpp>
 #include "Constants.h"
 
+#include <numbers>
+
+#include <frc/controller/PIDController.h>
+#include <frc/controller/ProfiledPIDController.h>
+#include <frc/controller/SimpleMotorFeedforward.h>
+
+
 using namespace ctre::phoenix6;
+using namespace SwerveModuleConstants;
 
 class SwerveModule
 {
@@ -28,7 +36,7 @@ public:
     // GetAbsolutePosition returns 0 - 360 degrees (default)
     frc::Rotation2d GetAngle() { return (frc::Rotation2d(units::angle::degree_t(GetSwervePosition()))); }
 
-    void SetDesiredState(frc::SwerveModuleState desiredState, double speedAdjustment);
+    void SetDesiredState(frc::SwerveModuleState desiredState);
     // Returns the desired count for the swerve encoder
     double GetDesiredCount() { return desiredCount; }
     // Returns the current count of the swerve motor encoder
@@ -46,7 +54,7 @@ public:
     // Returns the encoder position of the drive motor
     double GetDriveEncoder() { return driveMotor.GetPosition().GetValueAsDouble(); };
     // Returns the current SwerveModulePosition
-    frc::SwerveModulePosition GetModulePosition() { return frc::SwerveModulePosition{units::length::meter_t(GetDriveEncoder() / SwerveModuleConstants::DRIVE_GEAR_RATIO * SwerveModuleConstants::WHEEL_CIRCUMFERENCE), GetAngle()}; };
+    frc::SwerveModulePosition GetModulePosition() { return frc::SwerveModulePosition{units::length::meter_t(GetDriveEncoder() / SwerveModuleConstants::kDriveRatio * SwerveModuleConstants::kWheelCircumference), GetAngle()}; };
     // Returns the RPM of the drive motor
     double GetDriveRPM() { return driveMotor.GetRotorVelocity().GetValueAsDouble() * 600.0 / 2048.0; };
     // Returns the current being pulled by the drive motor
@@ -79,6 +87,13 @@ private:
     hardware::TalonFX swerveMotor;
     hardware::CANcoder canCoder;
 
-    controls::PositionVoltage swervePositionOut{0_tr, 0_tps, true, 0_V, 0, false};
-    // controls::DutyCycleOut driveMotorOut(0);
+    frc::PIDController drivePIDController{kDriveP, kDriveI, kDriveD};
+    frc::ProfiledPIDController<units::radians> turningPIDController{
+      kAngleP, kAngleI, kAngleD,
+      {kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration}};
+
+  frc::SimpleMotorFeedforward<units::meters> m_driveFeedforward{1_V, 3_V / 1_mps};
+  frc::SimpleMotorFeedforward<units::radians> m_turnFeedforward{
+      1_V, 0.5_V / 1_rad_per_s};
+
 };
