@@ -17,42 +17,21 @@ void Robot::RobotPeriodic()
 
 void Robot::DisabledInit() {}
 
-void Robot::DisabledPeriodic() 
-{
-	
-}
+void Robot::DisabledPeriodic() {}
 
 void Robot::AutonomousInit()
 {
 	container.OdometryInit();
-
-	autonomousCommand = container.GetAutonomousCommand();
-
-	if (autonomousCommand)
-	{
-		autonomousCommand->Schedule();
-	}
 }
 
-void Robot::AutonomousPeriodic() 
-{
-	container.LogAutoData();
-}
+void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit()
 {
 	container.OdometryInit();
-
-	if (autonomousCommand)
-	{
-		autonomousCommand->Cancel();
-	}
 }
 
-void Robot::TeleopPeriodic()
-{
-	container.LogTeleopData();
-}
+void Robot::TeleopPeriodic() {}
 
 void Robot::TestPeriodic() {}
 

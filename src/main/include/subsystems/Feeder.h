@@ -4,7 +4,8 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/Timer.h>
 #include <frc/DigitalInput.h>
-#include "rev/CANSparkMax.h"
+//#include "rev/CANSparkMax.h"
+#include "rev/CANSparkFlex.h"
 #include "Constants.h"
 
 class Feeder : frc2::SubsystemBase
@@ -16,7 +17,7 @@ public:
     void IntakeFromSource();
     void ShootAtSpeaker();
     void ShootAtAmp();
-    bool IsNoteSecured() { return GetTopSensorInput() && GetBottomSensorInput(); };
+    bool IsNoteSecured() { return GetNoteSensorInput(); };
     void Purge() { SetFeedMotor(-1.0); };
     void SetFeedMotor(double power) { feedMotor.Set(power); };
     void StopMotor() { SetFeedMotor(0.0); };
@@ -27,15 +28,16 @@ public:
     double GetSpeakerShooterSpeed() { return speakerShooterSpeed; };
     double GetAmpShooterSpeed() { return ampShooterSpeed; };
 
-    bool GetTopSensorInput() { return topFeedSensor.Get(); };
-    bool GetBottomSensorInput() { return bottomFeedSensor.Get(); };
+    //bool GetTopSensorInput() { return topFeedSensor.Get(); };
+    bool GetNoteSensorInput() { return noteFeedSensor.Get(); };
 
 private:
-    rev::CANSparkMax feedMotor{RobotMap::FEED_MOTOR_ADDRESS, rev::CANSparkMax::MotorType::kBrushless};
+    //rev::CANSparkMax feedMotor{RobotMap::FEED_MOTOR_ADDRESS, rev::CANSparkMax::MotorType::kBrushless};
+    rev::CANSparkFlex feedMotor{RobotMap::FEED_MOTOR_ADDRESS, rev::CANSparkFlex::MotorType::kBrushless};
     rev::SparkRelativeEncoder feedMotorEncoder = feedMotor.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
 
-    frc::DigitalInput topFeedSensor{RobotMap::TOP_FEED_SENSOR_ADDRESS};
-    frc::DigitalInput bottomFeedSensor{RobotMap::BOTTOM_FEED_SENSOR_ADDRESS};
+    //frc::DigitalInput topFeedSensor{RobotMap::TOP_FEED_SENSOR_ADDRESS};
+    frc::DigitalInput noteFeedSensor{RobotMap::NOTE_FEED_SENSOR_ADDRESS};
     frc::Timer feedSensorTimer{};
 
     // Speeds should be from 0.0 - 1.0

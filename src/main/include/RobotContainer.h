@@ -21,9 +21,9 @@
 #include <frc/PowerDistribution.h>
 
 #include "subsystems/Drivetrain.h"
-#include "subsystems/Shooter.h"
-#include "subsystems/Intake.h"
+#include "subsystems/Limelight.h"
 #include "subsystems/Feeder.h"
+#include "subsystems/Intake.h"
 #include "Controls.h"
 
 class RobotContainer
@@ -31,38 +31,31 @@ class RobotContainer
 public:
 	RobotContainer();
 
-	frc2::CommandPtr GetAutonomousCommand();
-	frc2::CommandPtr GetShootCommand();
 	frc2::CommandPtr GetIntakeCommand();
 
 	void OdometryInit()
 	{
-		
+		limelight3.UpdateLimelightTracking();
+		swerve.ResetPose(limelight3.GetRobotPose());
+		limelight3.UpdateTelemetry();
 	};
 
 	Drivetrain *GetSwerve() { return &swerve; };
-	Shooter *GetShooter() { return &shooter; };
+	Limelight *GetLimelight3() { return &limelight3; };
+	Limelight *GetLimelight2() { return &limelight2; };
 	Intake *GetIntake() { return &intake; };
 	Feeder *GetFeeder() { return &feeder; };
-	
-	std::string GetAuto() { return autoChooser.GetSelected(); };
-
-	void PlotAutonomousPath();
-
-	void LogTeleopData();
-	void LogAutoData();
 
 private:
 	Drivetrain swerve;
-	Shooter shooter;
+	Limelight limelight3;
+	Limelight limelight2;
 	Intake intake;
 	Feeder feeder;
 
 	frc::PowerDistribution pdp;
 
 	Controls controls;
-
-	frc::SendableChooser<std::string> autoChooser;
 
 	FILE *t_output;
 	frc::Timer logTimer;

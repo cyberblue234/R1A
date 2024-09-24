@@ -4,17 +4,16 @@
 #include <frc/Joystick.h>
 #include <frc2/command/SubsystemBase.h>
 #include "subsystems/Drivetrain.h"
-#include "subsystems/Shooter.h"
-#include "subsystems/Intake.h"
+#include "subsystems/Limelight.h"
 #include "subsystems/Feeder.h"
+#include "subsystems/Intake.h"
 
 class Controls : frc2::SubsystemBase
 {
 public:
-    Controls(Drivetrain *, Shooter *, Intake *, Feeder *);
+    Controls(Drivetrain *, Limelight *, Intake *, Feeder *);
     void Periodic() override;
     void DriveControls();
-    void ShooterControls();
     void IntakeControls();
     void FeederControls();
 
@@ -43,9 +42,9 @@ public:
 
 private:
     Drivetrain *swerve;
-    Shooter *shooter;
-    Intake *intake;
+    Limelight *limelight3;
     Feeder *feeder;
+    Intake *intake;
 
     int selectedRotaryIndex = 0;
 };
